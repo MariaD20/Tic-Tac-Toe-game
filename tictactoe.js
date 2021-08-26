@@ -1,47 +1,51 @@
 let moves = 0;
-const cells = document.querySelectorAll("td");
 let currentPlayer = "X";
 document.getElementById("whoMoves").innerHTML = currentPlayer + " to move!";
+var table = document.getElementById("table");
 
-function chooseCell() {
-  for(let i = 0; i < cells.length; ++i) {
-      cells[i].addEventListener("click", cellPressed);
-      function cellPressed() {
+function generateBoard() {
+  for (var i = 0; i < 3; i++) {
+    row = table.insertRow(i);
+    for (var j = 0; j < 3; j++) {
+      cell = row.insertCell(j);
+      cell.addEventListener('click', ev => {
         ++moves;
-        cells[i].textContent = currentPlayer;
-        cells[i].removeEventListener("click", cellPressed);
+        ev.target.textContent = currentPlayer;
         whoIsNext(currentPlayer);
-        checkStatus(currentPlayer);
-      }
-  }
-}
-
-function checkEqual(x, y, z) {
-  return(x.textContent == y.textContent && y.textContent == z.textContent && x.textContent != "");
-}
-
-function checkStatus(player) {
-  if (checkEqual(cells[0], cells[1], cells[2]) || checkEqual(cells[0], cells[3], cells[6]) || checkEqual(cells[0], cells[4], cells[8])
-   || checkEqual(cells[3], cells[4], cells[5]) || checkEqual(cells[6], cells[7], cells[8]) || checkEqual(cells[1], cells[4], cells[7])
-   || checkEqual(cells[2], cells[5], cells[8]) || checkEqual(cells[2], cells[4], cells[6])) {
-     final("We have a winner and this is " +  whoIsNext(player) + "! Congratulations!!!", "");
-     disableUnclickedButtons();
-  } else if (moves == 9) {
-    final("The game is over and it's a draw! Both of you are very good at playing this game!", "");
-  }
-}
-
-function final(mess, noMove) {
-  document.getElementById("finalMessage").innerHTML = mess;
-  document.getElementById("whoMoves").innerHTML = noMove;
-}
-
-function disableUnclickedButtons() {
-  for (var i = 0; i < cells.length; ++i) {
-    if (cells[i].textContent == "") {
-      cells[i].removeEventListener("click", cellPressed);
+        checkGameStatus(currentPlayer);
+      }, {once:true});
     }
   }
+}
+
+const winningCombinations = [
+  [[0, 0], [0, 1], [0, 2]],
+  [[1, 0], [1, 1], [1, 2]],
+  [[2, 0], [2, 1], [2, 2]],
+  [[0, 0], [1, 0], [2, 0]],
+  [[0, 1], [1, 1], [2, 1]],
+  [[0, 2], [1, 2], [2, 2]],
+  [[0, 0], [1, 1], [2, 2]],
+  [[2, 0], [1, 1], [0, 2]],
+];
+
+function checkGameStatus(player) {
+  for (var i = 0; i < winningCombinations.length; ++i) {
+    if (table.rows[winningCombinations[i][0][0]].cells[winningCombinations[i][0][1]].textContent ==
+        table.rows[winningCombinations[i][1][0]].cells[winningCombinations[i][1][1]].textContent &&
+        table.rows[winningCombinations[i][0][0]].cells[winningCombinations[i][0][1]].textContent ==
+        table.rows[winningCombinations[i][2][0]].cells[winningCombinations[i][2][1]].textContent &&
+        table.rows[winningCombinations[i][0][0]].cells[winningCombinations[i][0][1]].textContent != "") {
+      final("We have a winner and this is " +  whoIsNext(player) + "! Congratulations!!!", "");
+    } else if (moves == 9) {
+      final("The game is over and it's a draw! Both of you are very good at playing this game!", "");
+    }
+  }
+}
+
+function final(message, noMove) {
+  document.getElementById("finalMessage").innerHTML = message;
+  document.getElementById("whoMoves").innerHTML = noMove;
 }
 
 function whoIsNext(player) {
@@ -58,12 +62,4 @@ function startAgain() {
   window.location.reload();
 }
 
-chooseCell();
-
-//let xPlay = document.getElementById("xPlayer").textContent;
-//alert(xPlay);
-//alert(xPlayer.value);
-//let oPlay = document.getElementById("oPlayer").value;
-
-//document.getElementById("whoMoves").innerHTML = oPlay + " to move!";
-//document.getElementById("whoMoves").innerHTML = xPlay + " to move!";
+generateBoard();
