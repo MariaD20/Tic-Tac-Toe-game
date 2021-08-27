@@ -31,16 +31,25 @@ const winningCombinations = [
 
 function checkGameStatus(player) {
   for (var i = 0; i < winningCombinations.length; ++i) {
-    if (table.rows[winningCombinations[i][0][0]].cells[winningCombinations[i][0][1]].textContent ==
+    var flag = 1;
+    for (var j = 0, k = 0; j < winningCombinations[i].length - 1; ++j) {
+        if (table.rows[winningCombinations[i][j][k]].cells[winningCombinations[i][j][k + 1]].textContent !=
+            table.rows[winningCombinations[i][j + 1][k]].cells[winningCombinations[i][j + 1][k + 1]].textContent ||
+            table.rows[winningCombinations[i][j][k]].cells[winningCombinations[i][j][k + 1]].textContent == "") {
+              flag = 0;
+    /*if (table.rows[winningCombinations[i][0][0]].cells[winningCombinations[i][0][1]].textContent ==
         table.rows[winningCombinations[i][1][0]].cells[winningCombinations[i][1][1]].textContent &&
         table.rows[winningCombinations[i][0][0]].cells[winningCombinations[i][0][1]].textContent ==
         table.rows[winningCombinations[i][2][0]].cells[winningCombinations[i][2][1]].textContent &&
-        table.rows[winningCombinations[i][0][0]].cells[winningCombinations[i][0][1]].textContent != "") {
-      final("We have a winner and this is " +  whoIsNext(player) + "! Congratulations!!!", "");
-    } else if (moves == 9) {
-      final("The game is over and it's a draw! Both of you are very good at playing this game!", "");
+        table.rows[winningCombinations[i][0][0]].cells[winningCombinations[i][0][1]].textContent != "") {*/
+        }
+      }
+      if (flag == 1) {
+        final("We have a winner and this is " +  whoIsNext(player) + "! Congratulations!!!", "");
+      } else if (moves == 9) {
+        final("The game is over and it's a draw! Both of you are very good at playing this game!", "");
+      }
     }
-  }
 }
 
 function final(message, noMove) {
